@@ -70,10 +70,7 @@ public class test {
 		}finally {
 		
 		}
-		//Test for params
-//		System.out.println("========params========");
 
-		// TODO Comment generation method stub
 		/*
 		 *  What is it:		Comment generation
 		 *  Who does it:    client
@@ -81,24 +78,6 @@ public class test {
 		 */
 		CommentPrivate newComment = new CommentPrivate(params,"abhjghjcd");
 		CommentPublic pubComment = newComment.getCommentPublic();
-		
-//		System.out.println("========pubComment========");
-//		System.out.println(pubComment);
-//		System.out.println("========pubComment.toString()========");
-//		System.out.println(pubComment.toString());
-//		System.out.println("========pubComment.toString().length()========");
-//		System.out.println(pubComment.toString().length());
-//		System.out.println("========pubComment.getComment()========");
-//		System.out.println(pubComment.getComment());
-//		System.out.println("========pubComment.getValue()========");
-//		System.out.println(pubComment.getValue());
-//		System.out.println("========pubComment.getValue().bitLength()========");
-//		System.out.println(pubComment.getValue().bitLength());
-		//System.out.println("========Hash.MD5(pubComment.getValue().toString())========");
-		//System.out.println(Hash.MD5(pubComment.getValue().toString()));
-		//System.out.println("========Hash.MD5(pubComment.getValue().toString()).length()========");
-		//System.out.println(Hash.MD5(pubComment.getValue().toString()).length());
-//		System.out.println("=Successfully newed a comment");
 
 		//TODO Comment verification method stub
 		/*
@@ -106,35 +85,29 @@ public class test {
 		 *  Who does it:    transaction verifier
 		 *  What it does:   Verifies the structure of a comment obtained from a COMMENT_MINT transaction.
 		 */
-		
 		if(!pubComment.validate()) {
 			System.out.println("Error: comment is not valid!");
 		}else {
 			System.out.println("=>Successfully generate and valid One testComment\n");
 		}
 		
-		//TODO Accumulator computation method stub
-				/*
-				 *  What is it:		Accumulator computation
-		    	 *  Who does it:    client & transaction verifier
-				 *  What it does:   Collects a number of PublicCoin values drawn from the block chain and calculates an accumulator.
-				 */
+		/*
+		 *  What is it:		Accumulator computation
+		 *  Who does it:    client & transaction verifier
+		 *  What it does:   Collects a number of PublicCoin values drawn from the block chain and calculates an accumulator.
+		 */
 		// Create an empty accumulator object
 		Accumulator accumulator = new Accumulator(params,"");
-		accumulator.AddCommentPublic(newComment.getCommentPublic());
+//		accumulator.AddCommentPublic(newComment.getCommentPublic());
 		
 		System.out.println("=>Generate 5 testComments and Accumulate them...");
 		// Add several comments to it
 		for(int i = 0; i < 5; i++) {
 			CommentPrivate testComment = new CommentPrivate(params,"abcd"+""+i);
 			accumulator.AddCommentPublic(testComment.getCommentPublic());
-			//System.out.println(testComment.getCommentPublic().getComment());
-			//System.out.println(testComment.getCommentPublic().getValue().bitLength());
 		}
 	
-		System.out.println("========accumulator.getValue()========");
-		System.out.println(accumulator.getValue());
-		System.out.println("=>Successfully accumulated testComments");
+		System.out.println("--------- 5 个测试comment的 accumulator值:\n\t\t"+accumulator.getValue());
 
 		//TODO Comment spend method stub
 		/*
@@ -144,7 +117,11 @@ public class test {
 		 */
 System.out.println("=>Generate a witness...");
 		AccumulatorWitness witness = new AccumulatorWitness(params, accumulator, newComment.getCommentPublic());
+		System.out.println("--------- witness val:"+witness.getValue());
+		accumulator.AddCommentPublic(newComment.getCommentPublic());
 		
+		System.out.println("--------- witness  val:"+witness.getValue()+
+				"\n--------- accumulator val:"+accumulator.getValue());
 		SpendMetaData metaData = new SpendMetaData(DUMMY_TRANSACTION_HASH, DUMMY_ACCUMULATOR_ID);
 		
 		// Construct the CoinSpend object. This acts like a signature on the transaction.

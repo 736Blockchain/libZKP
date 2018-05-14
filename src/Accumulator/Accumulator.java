@@ -39,7 +39,17 @@ public class Accumulator {
 		
 		this.value = this.params.accumulatorBase;
 		
-	} 
+	}
+    
+    /**
+     * copy an accumulator
+     * but we leave comment blank
+     */
+    public Accumulator(Accumulator a) {
+    	this.params = a.params;
+    	this.value = a.value;
+    	this.comment = "";
+    }
     
     public void accumulate(CommentPublic commentpublic) {
 	    	
@@ -80,7 +90,7 @@ public class Accumulator {
     }
     
     public boolean EqualAccumulator(Accumulator a) {
-    	return this.value == a.value;
+    	return this.value.compareTo(a.value)==0;
     }
 } 
    

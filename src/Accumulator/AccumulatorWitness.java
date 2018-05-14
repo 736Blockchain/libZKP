@@ -14,7 +14,7 @@ public class AccumulatorWitness {
 	
 	public AccumulatorWitness(Params p, Accumulator checkpoint, CommentPublic commentpublic) {
 		params = p;
-		witness = checkpoint;
+		witness = new Accumulator(checkpoint);
 		element = commentpublic;
 	}
 	
@@ -29,10 +29,10 @@ public class AccumulatorWitness {
 	}
 	
 	public boolean VerifyWitness(Accumulator a, CommentPublic comment) {
-		Accumulator temp = witness;
+		Accumulator temp = new Accumulator(witness);
 		temp = temp.AddCommentPublic(element);
 		//return (temp.equals(a) && this.element.equals(comment));
-		return (temp == a && this.element == comment);
+		return (temp.EqualAccumulator(a) && this.element == comment);
 	}
 	
 	public AccumulatorWitness AddAccumulatorWitness(CommentPublic AddComment) {

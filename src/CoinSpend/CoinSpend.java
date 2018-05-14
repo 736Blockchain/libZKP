@@ -50,7 +50,7 @@ public class CoinSpend {
 		if (!(witness.VerifyWitness(a, comment.getCommentPublic()))) {
 			throw new libzkpException("Accumulator witness does not verify");
 		}
-System.out.println(">>>>>witness verify success");
+System.out.println("--------witness verify success");
 		if (!HasValidSerial()) {
 			throw new libzkpException("Invalid serial # range");
 		}
@@ -92,9 +92,12 @@ System.out.println(">>>>>witness verify success");
 
 	//Verify both of the sub-proofs using the given meta-data
 	public Boolean Verify(Accumulator a, SpendMetaData m) {
-		System.out.println("	\"commitmentPoK & accumulatorPoK & serialNumberSoK\" verify		");
+		System.out.println("	\n\"commitmentPoK & accumulatorPoK & serialNumberSoK\" verify		");
+		System.out.println("===========================");
 		System.out.println(commitmentPoK.Verify(serialCommitmentToCoinValue, accCommitmentToCoinValue));
+		System.out.println("===========================");
 		System.out.println(accumulatorPoK.Verify(a, accCommitmentToCoinValue));
+		System.out.println("===========================");
 		System.out.println(serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue, signatureHash(m)));
 		return   /*(a.getComment() == this.getComment())
 				&& */commitmentPoK.Verify(serialCommitmentToCoinValue, accCommitmentToCoinValue)

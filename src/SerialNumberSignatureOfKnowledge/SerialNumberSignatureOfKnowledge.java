@@ -104,7 +104,7 @@ public class SerialNumberSignatureOfKnowledge {
 	
 	
 	public Boolean Verify(BigInteger commentSerialNumber, BigInteger valueOfCommitmentToCoin, byte[] msghash) {
-		
+		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 		//System.out.println(s_notprime);
 		//System.out.println(sprime);
 		BigInteger a = params.coinCommitmentGroup.g;
@@ -146,6 +146,7 @@ public class SerialNumberSignatureOfKnowledge {
         byte[] gethash = param.Hash.calculateHash(getbytes);
         
 		//return gethash == this.hash;
+		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         return param.Hash.equals(gethash, this.hash);
 	}
 	
