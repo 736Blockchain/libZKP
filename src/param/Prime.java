@@ -5,7 +5,12 @@ import java.util.Random;
 
 public class Prime {
 
-	public static BigInteger generatePrime(int bitsNum){
+	/**
+	 * 返回一个指定bit书目大小的 随机 素大数
+	 * @param bitsNum
+	 * @return prime BigInteger
+	 */
+	public static BigInteger generateRandomPrime(int bitsNum){
 		int certainty = 0;
 		int verify_certainty = 0;
 		if(certainty == 0) {
@@ -23,4 +28,14 @@ public class Prime {
 		}
 		
 	}
+	
+	/**
+	 * 快速生成一个素大数
+	 * @param bitsNum
+	 * @return prime BigInteger
+	 */
+	public static BigInteger generateRandomPrimeFast(int bitsNum){
+		return new BigInteger(bitsNum, 10, new Random());
+	}
+	
 }

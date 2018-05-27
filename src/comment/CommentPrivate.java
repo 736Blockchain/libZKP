@@ -23,7 +23,7 @@ public class CommentPrivate {
 		for(int attempt = 0; attempt < 10000; attempt++) {
 			//s是一个随机数，作为serialNumber
 			s = BigNumber.randomBigInteger(this.params.coinCommitmentGroup.groupOrder);
-			
+//System.out.println("--------- s.bitlength():"+s.bitLength());
 			Commitment c = new Commitment(params.coinCommitmentGroup, s);
 			//System.out.println(c.getCommitmentValue().bitLength());
 			//检查CommimentValue是个素数，然后确保在一定的范围内
@@ -31,8 +31,8 @@ public class CommentPrivate {
 			// in the appropriate range. If not, we'll throw this coin
 			// away and generate a new one.
 			if (c.getCommitmentValue().isProbablePrime(10)
-					&& c.getCommitmentValue().compareTo(params.accumulatorParams.minCoinValue) >= 0
-					&& c.getCommitmentValue().compareTo(params.accumulatorParams.maxCoinValue) <= 0
+					&& c.getCommitmentValue().compareTo(params.accumulatorAndproofParams.minCommitmentValue) >= 0
+					&& c.getCommitmentValue().compareTo(params.accumulatorAndproofParams.maxCommitmentValue) <= 0
 					) {
 				this.serialNumber = s;
 				this.randomnes = c.getRandomness();

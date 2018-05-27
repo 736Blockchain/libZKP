@@ -11,7 +11,7 @@ import Exception.libzkpException;
 public class Accumulator {
 
 	private AccumulatorAndProofParams params;
-	private BigInteger value;
+	private BigInteger accumulateValue;
 	private String comment;
 	
 	
@@ -24,20 +24,20 @@ public class Accumulator {
 			throw new libzkpException("Invalid parameters for accumulator");
 		}
 		
-		this.value = this.params.accumulatorBase;
+		this.accumulateValue = this.params.accumulatorBase;
 		
 	}
 	
     public Accumulator(Params p, String c) {
 		
-    	this.params = p.accumulatorParams;
-    	this.comment = c;
+    		this.params = p.accumulatorAndproofParams;
+    		this.comment = c;
 		
 		if (!params.initialized) {
 			throw new libzkpException("Invalid parameters for accumulator");
 		}
 		
-		this.value = this.params.accumulatorBase;
+		this.accumulateValue = this.params.accumulatorBase;
 		
 	}
     
@@ -47,13 +47,17 @@ public class Accumulator {
      */
     public Accumulator(Accumulator a) {
     	this.params = a.params;
-    	this.value = a.value;
+    	this.accumulateValue = a.accumulateValue;
     	this.comment = "";
     }
     
+    /**
+     * 聚合进一个评论
+     * @param commentpublic
+     */
     public void accumulate(CommentPublic commentpublic) {
 	    	
-	    	if(this.value == null) {
+	    	if(this.accumulateValue == null) {
 	    		throw new libzkpException("Accumulator is not initialized");
 	    	}
 	    	
@@ -67,7 +71,7 @@ public class Accumulator {
 	    	
 	    	if(commentpublic.validate()) {
 	    		// Compute new accumulator = "old accumulator"^{element} mod N
-	    		this.value = this.value.modPow(commentpublic.getValue(), this.params.accumulatorModulus);
+	    		this.accumulateValue = this.accumulateValue.modPow(commentpublic.getValue(), this.params.accumulatorModulus);
 	    	}else {
 	    		throw new libzkpException("PublicCoin is not valid");
 	    	}
@@ -81,16 +85,16 @@ public class Accumulator {
     
     
     public BigInteger getValue() {
-    	return this.value;
+    		return this.accumulateValue;
     }
     
     public Accumulator AddCommentPublic(CommentPublic commentpublic) {
-    	this.accumulate(commentpublic);
+    		this.accumulate(commentpublic);
     	return this;
     }
     
     public boolean EqualAccumulator(Accumulator a) {
-    	return this.value.compareTo(a.value)==0;
+    		return this.accumulateValue.compareTo(a.accumulateValue)==0;
     }
 } 
    

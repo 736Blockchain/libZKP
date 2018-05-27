@@ -18,98 +18,98 @@ public class ParamGeneration {
 //	public int MAX_GENERATOR_ATTEMPTS = 10000;
 	public int NUM_SCHNORRGEN_ATTEMPTS = 10000;
 	
-	public void CalculateParams(Params params, BigInteger accumulatorModulus, /*String aux,*/ int securityLevel) {
+	public void CalculateParams(Params params, BigInteger accumulatorModulus,  int securityLevel) {
 System.out.println("	======进入CalculateParams方法...");		
 		params.initialized = false;
-		params.accumulatorParams.initialized = false;
+		params.accumulatorAndproofParams.initialized = false;
 		
-		//验证  |accumulatorModulus| > 1023 bits 
 		int Nlen = accumulatorModulus.bitLength();
-		if(Nlen < 1023) {
+		if(accumulatorModulus.bitLength() < 1023) {//模数一定要大于1023 bits 
 			throw new libzkpException("N < 1023 bits----in ParamGeneration.java");
 		}
 		
-		//验证Verify securityLevel大于等于 80 bits
-		if(securityLevel < 80) {
+		if(securityLevel < 80) {//验证Verify securityLevel大于等于 80 bits
 			throw new libzkpException("SecurityLevel must be at least 80 bits----in ParamGeneration.java");
 		}
 		
 		//设置累加器的模数为accumulatorModulus  Set the accumulator modulus to "accumulatorModulus"
-		params.accumulatorParams.accumulatorModulus = accumulatorModulus;
+		params.accumulatorAndproofParams.accumulatorModulus = accumulatorModulus;
 		
 		//计算“F_p”需要的大小
-		//[0]-p   qpLen[0] = 1024;
-		//[1]-q   qpLen[1] = 256;
-		int [] qpLen = new int[2];
-		qpLen = calculateGroupParamLengths();
+		//[0]-p   默认qpLen[0] = 1024;
+		//[1]-q   默认qpLen[1] = 256;
+		int [] pqLen = new int[2];
+		pqLen = calculateGroupParamLengths(Nlen-2, securityLevel);//Nlen-2
 		
-		params.coinCommitmentGroup = deriveIntegerGroupParams( qpLen[0], qpLen[1]);//1024, 256
+		params.coinCommitmentGroup = deriveIntegerGroupParams( pqLen[0], pqLen[1]);//1024, 256
+		System.out.println("---- params.coinCommitmentGroup (modulus bits len:)"+params.coinCommitmentGroup.modulus.bitLength());
 System.out.println("	======生成params.coinCommitmentGroup完毕...");
 		params.serialNumberSoKCommitmentGroup = deriveIntegerGroupFromOrder(params.coinCommitmentGroup.modulus);
+		System.out.println("---- params.serialNumberSoKCommitmentGroup(Modulus bit len:)"+params.serialNumberSoKCommitmentGroup.modulus.bitLength());
 System.out.println("	======生成params.serialNumberSoKCommitmentGroup完毕...");
-		params.accumulatorParams.accumulatorPoKCommitmentGroup = deriveIntegerGroupParams(qpLen[0] + 300, qpLen[1] + 1);
+		params.accumulatorAndproofParams.accumulatorPoKCommitmentGroup = deriveIntegerGroupParams(pqLen[0] + 300, pqLen[1] + 1);
+		System.out.println("---- params.accumulatorAndproofParams.accumulatorPoKCommitmentGroup (Modulus bits size:)"+params.accumulatorAndproofParams.accumulatorPoKCommitmentGroup.modulus.bitLength());
 System.out.println("	======生成params.accumulatorParams.accumulatorPoKCommitmentGroup完毕...");
-		params.accumulatorParams.accumulatorQRNCommitmentGroup.g = ( Prime.generatePrime(Nlen - 1) ).modPow(BigInteger.valueOf(2),accumulatorModulus); 
-		params.accumulatorParams.accumulatorQRNCommitmentGroup.h = ( Prime.generatePrime(Nlen - 1) ).modPow(BigInteger.valueOf(2),accumulatorModulus); 
+		params.accumulatorAndproofParams.accumulatorQRNCommitmentGroup.g = ( Prime.generateRandomPrime(Nlen - 1) ).modPow(BigInteger.valueOf(2),accumulatorModulus); 
+		params.accumulatorAndproofParams.accumulatorQRNCommitmentGroup.h = ( Prime.generateRandomPrime(Nlen - 1) ).modPow(BigInteger.valueOf(2),accumulatorModulus); 
 		
 
 		final BigInteger constant = BigInteger.valueOf(ACCUMULATOR_BASE_CONSTANT);
-		params.accumulatorParams.accumulatorBase = BigInteger.ONE;
-		for(int count = 0; count < MAX_ACCUMGEN_ATTEMPTS && params.accumulatorParams.accumulatorBase.compareTo(BigInteger.ONE)==0; count++) {	
-			params.accumulatorParams.accumulatorBase = constant.modPow(BigInteger.valueOf(2),params.accumulatorParams.accumulatorModulus);
+		params.accumulatorAndproofParams.accumulatorBase = BigInteger.ONE;
+		for(int count = 0; count < MAX_ACCUMGEN_ATTEMPTS && params.accumulatorAndproofParams.accumulatorBase.compareTo(BigInteger.ONE)==0; count++) {	
+			params.accumulatorAndproofParams.accumulatorBase = constant.modPow(BigInteger.valueOf(2),params.accumulatorAndproofParams.accumulatorModulus);
 		}
 		
 		
-		params.accumulatorParams.maxCoinValue = params.coinCommitmentGroup.modulus;
-		params.accumulatorParams.minCoinValue = BigInteger.valueOf(2).pow((params.coinCommitmentGroup.modulus.bitLength()/2)+3);
+		params.accumulatorAndproofParams.maxCommitmentValue = params.coinCommitmentGroup.modulus;
+		params.accumulatorAndproofParams.minCommitmentValue = BigInteger.valueOf(2).pow((params.coinCommitmentGroup.modulus.bitLength()/2)+3);
 		
-		params.accumulatorParams.initialized = true;
+		params.accumulatorAndproofParams.initialized = true;
 		params.initialized = true;
 		
 	}
 	
 
-	/* qpLen[0] = 1024;
-	 * qpLen[1] = 256;
+	/* qpLen[0] = 1024;plen
+	 * qpLen[1] = 256; qlen
 	 */
-	public int[] calculateGroupParamLengths() {
+	public int[] calculateGroupParamLengths(int maxPlen, int securitylevel) {
 		int [] qpLen = new int[2];
-		qpLen[0] = 1024;
-		qpLen[1] = 256;
-		return qpLen;
-		/*
-		pLen = qLen =0;
+//		qpLen[0] = 1024;
+//		qpLen[1] = 256;
+		qpLen[0] = 0;
+		qpLen[1] = 0;
 			
-		if (securityLevel <80) {
+		if (securitylevel <80) {
 			throw new libzkpException("Security level must be at least 80 bits.");
-		}else if (securityLevel == 80) {
-			qLen = 256;
-			pLen = 1024;
-		}else if (securityLevel <= 112) {
-			qLen = 256;
-			pLen = 2048;
-		}else if (securityLevel <= 128) {
-			qLen = 320;
-			pLen = 3072;
+		}else if (securitylevel == 80) {
+			qpLen[1] = 256;
+			qpLen[0] = 1024;
+		}else if (securitylevel <= 112) {
+			qpLen[1] = 256;
+			qpLen[0] = 2048;
+		}else if (securitylevel <= 128) {
+			qpLen[1] = 320;
+			qpLen[0] = 3072;
 		}else {
 			throw new libzkpException("Security level not supported.");
 		}
 		
-		if (pLen > maxPLen) {
+		if (qpLen[0] > maxPlen) {
 			throw new libzkpException("Modulus size is too small for this security level.");
 		}
-		*/
+		return qpLen;
 	}
 	
 	//生成p和q，p为1024位，q为256位  都是素数  且满足p = 2^w * q + 1
 	public void calculateGroupModulusAndOrder(int pLen, int qLen, IntegerGroupParams result /*BigInteger modulus, BigInteger order*/) {
 		
-		result.groupOrder = Prime.generatePrime(qLen);
+		result.groupOrder = Prime.generateRandomPrime(qLen);
 		
 		int p0len = (int)Math.ceil((pLen/2.0)+1);
-		BigInteger p0 = Prime.generatePrime(p0len);
+		BigInteger p0 = Prime.generateRandomPrime(p0len);
 		
-		BigInteger x = Prime.generatePrime(pLen);
+		BigInteger x = Prime.generateRandomPrime(pLen);
 		
 		BigInteger powerOfTwo = (BigInteger.valueOf(2)).pow(pLen-1);
 		x = powerOfTwo.add( (x.mod(powerOfTwo)) );
@@ -128,7 +128,7 @@ System.out.println("	======生成params.accumulatorParams.accumulatorPoKCommitme
 			}
 			result.modulus = ((BigInteger.valueOf(2)).multiply(t).multiply(result.groupOrder).multiply(p0)).add(BigInteger.ONE);
 			
-			BigInteger a = Prime.generatePrime(pLen);
+			BigInteger a = Prime.generateRandomPrime(pLen);
 			a = (BigInteger.valueOf(2)).add( a.mod(result.modulus.subtract((BigInteger.valueOf(3)))) );
 			BigInteger z = a.modPow((BigInteger.valueOf(2)).multiply(t).multiply(result.groupOrder), result.modulus);
 			if( result.modulus.gcd(z.subtract((BigInteger.ONE))).compareTo( (BigInteger.ONE) ) == 0
@@ -170,7 +170,6 @@ System.out.println("	======生成params.accumulatorParams.accumulatorPoKCommitme
 	public IntegerGroupParams deriveIntegerGroupParams(int pLen, int qLen) {
 		 
 		IntegerGroupParams result = new IntegerGroupParams();
-
 		
 		calculateGroupModulusAndOrder(pLen, qLen, result/*result.modulus, result.groupOrder*/);
 

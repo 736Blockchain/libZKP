@@ -68,7 +68,7 @@ public class AccumulatorProofOfKnowledge {
 		this.C_u = (witness.getValue()).multiply(h_n.modPow(r_2, params.accumulatorModulus));
 		this.C_r = g_n.modPow(r_2, params.accumulatorModulus).multiply(h_n.modPow(r_3, params.accumulatorModulus));
 		
-		BigInteger r_alpha = BigNum.BigNumber.randomBigInteger(params.maxCoinValue.multiply(BigInteger.valueOf(2).pow(params.k_prime + params.k_dprime)));		
+		BigInteger r_alpha = BigNum.BigNumber.randomBigInteger(params.maxCommitmentValue.multiply(BigInteger.valueOf(2).pow(params.k_prime + params.k_dprime)));		
 		if (
 				(BigNumber.randomBigInteger(BigInteger.valueOf(3)).mod(BigInteger.valueOf(2))).compareTo(BigInteger.ONE) == 0
 				) {
@@ -168,7 +168,7 @@ public class AccumulatorProofOfKnowledge {
 		boolean result_t4 = (t_4.compareTo(t_4_prime) == 0);
 		
 		
-		boolean result_range = (s_alpha.compareTo(params.maxCoinValue.multiply(BigInteger.valueOf(2).pow(params.k_prime + params.k_dprime +1)).negate()) >= 0) && (s_alpha.compareTo(params.maxCoinValue.multiply(BigInteger.valueOf(2).pow(params.k_prime + params.k_dprime +1))) <= 0);
+		boolean result_range = (s_alpha.compareTo(params.maxCommitmentValue.multiply(BigInteger.valueOf(2).pow(params.k_prime + params.k_dprime +1)).negate()) >= 0) && (s_alpha.compareTo(params.maxCommitmentValue.multiply(BigInteger.valueOf(2).pow(params.k_prime + params.k_dprime +1))) <= 0);
 		
 		System.out.print("result_st1:");
 		System.out.println(result_st1);

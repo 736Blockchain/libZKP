@@ -4,20 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
  public class Hash {
-//	public static void main(String[] args) {
-//		byte[] a = "sdsd".getBytes();
-//
-//		byte[] b = "sdsd".getBytes();
-//		
-//		byte[] ahash = calculateHash(a);
-//		byte[] bhash = calculateHash(b);
-//		
-//		System.out.println(ahash);
-//		System.out.println(bhash);
-//		System.out.println(equals(ahash,bhash));
-//	}
 
-	 public static String MD5(String s) {
+/*	 public static String MD5(String s) {
 		    try {
 		        MessageDigest md = MessageDigest.getInstance("MD5");
 		        byte[] bytes = md.digest(s.getBytes("utf-8"));
@@ -26,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 		    catch (Exception e) {
 		        throw new RuntimeException(e);
 		    }
-	}
+	}*/
 
 	public static String toHex(byte[] bytes) {
 
@@ -55,11 +43,23 @@ import java.security.NoSuchAlgorithmException;
 	public static Boolean equals(byte[] a, byte[] b) {
 		if(a.length != b.length)
 			return false;
-//		Boolean isEqual = true;
 		for(int i = 0; i < a.length; i++) 
 			if(a[i]!=b[i])
 				return false;
 		return true;
 	}
 	
+	
+//	public static void main(String[] args) {
+//	byte[] a = "sdsd".getBytes();
+//
+//	byte[] b = "sdsd".getBytes();
+//	
+//	byte[] ahash = calculateHash(a);
+//	byte[] bhash = calculateHash(b);
+//	
+//	System.out.println(ahash);
+//	System.out.println(bhash);
+//	System.out.println(equals(ahash,bhash));
+//}
 }

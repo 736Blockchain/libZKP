@@ -11,12 +11,12 @@ public class CommentPublic {
 	private String comment;	
 	
 	
-	public CommentPublic(Params p, BigInteger PublicValue, String PublicComment) {
+	public CommentPublic(Params p, BigInteger commitment_value, String PublicCommentString) {
 		params = p;
-		commitmentvalue = PublicValue;
-		comment = PublicComment;
+		commitmentvalue = commitment_value;
+		comment = PublicCommentString;
 		if (this.params.initialized == false) {
-			throw new libzkpException("Params are not initialized");
+			throw new libzkpException("Params are not initialized yet.");
 		}
 	}
 	
@@ -32,12 +32,23 @@ public class CommentPublic {
 		return this.comment;
 	}
 	
+	/**
+	 * 返回保存在评论公开部分的承诺值
+	 * @return commitmentvalue(BigInteger)
+	 */
 	public BigInteger getValue() {
 		return this.commitmentvalue;
 	}
 	
+	/**
+	 * 检验生成的承诺值c是否符合要求
+	 * 要求: 小于最大值，大于最小值，是个素数.
+	 * @return 检验结果true/false
+	 */
 	public Boolean validate(){
-	    return (this.params.accumulatorParams.minCoinValue.compareTo(this.commitmentvalue) == -1) && (this.commitmentvalue.compareTo(this.params.accumulatorParams.maxCoinValue) == -1) && this.commitmentvalue.isProbablePrime(10);
+	    return (this.params.accumulatorAndproofParams.minCommitmentValue.compareTo(this.commitmentvalue) == -1) 
+	    		&& (this.commitmentvalue.compareTo(this.params.accumulatorAndproofParams.maxCommitmentValue) == -1) 
+	    		&& this.commitmentvalue.isProbablePrime(10);
 		//return this.value.isProbablePrime(10);
 	}
 	

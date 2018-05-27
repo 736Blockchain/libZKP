@@ -3,6 +3,19 @@ package param;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+/**
+ * 用于Accumulator的参数集合
+ * @category
+ * 包括  模数(accumulatorModulus)
+ * 	    累加器初始值(accumulatorBase)
+ * 		承诺值的范围(minCommitmentValue ~ maxCommitmentValue)
+ * @category
+ * 还包括两个群
+ * 		①不知道什么群 accumulatorPoKCommitmentGroup
+ * 		②不知道什么群 accumulatorQRNCommitmentGroup
+ * @author jiaxyan
+ *
+ */
 public class AccumulatorAndProofParams  implements Serializable{
 	
 	public Boolean initialized;
@@ -15,10 +28,10 @@ public class AccumulatorAndProofParams  implements Serializable{
 	public BigInteger accumulatorBase;
 	
 	//累加器证明 accumulator proof 要求的承诺值下限
-	public BigInteger minCoinValue;
+	public BigInteger minCommitmentValue;
 	
 	//累加器证明 accumulator proof 要求的承诺值上限
-	public BigInteger maxCoinValue;
+	public BigInteger maxCommitmentValue;
 	
 	/*
 	 * 用来生成承诺的第二个群（自己就是一个对serial number的的承诺）

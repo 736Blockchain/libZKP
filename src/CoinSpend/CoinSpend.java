@@ -43,9 +43,9 @@ public class CoinSpend {
 		params = p;
 		PublicComment = comment.getCommentPublic().getComment();//取出评论字符串
 		coinSerialNumber = comment.getSerialNumber();//CommentPrivate里面的serialNumber
-		accumulatorPoK = new AccumulatorProofOfKnowledge(p.accumulatorParams);
+		accumulatorPoK = new AccumulatorProofOfKnowledge(p.accumulatorAndproofParams);
 		serialNumberSoK = new SerialNumberSignatureOfKnowledge(p);
-		commitmentPoK = new CommitmentProofOfKnowledge(p.serialNumberSoKCommitmentGroup, p.accumulatorParams.accumulatorPoKCommitmentGroup);
+		commitmentPoK = new CommitmentProofOfKnowledge(p.serialNumberSoKCommitmentGroup, p.accumulatorAndproofParams.accumulatorPoKCommitmentGroup);
 		
 		if (!(witness.VerifyWitness(a, comment.getCommentPublic()))) {
 			throw new libzkpException("Accumulator witness does not verify");
@@ -60,19 +60,19 @@ System.out.println("--------witness verify success");
 		Commitment fullCommitmentToCoinUnderSerialParams = new Commitment(p.serialNumberSoKCommitmentGroup,comment.getCommentPublic().getValue());
 		this.serialCommitmentToCoinValue = fullCommitmentToCoinUnderSerialParams.getCommitmentValue();
 		//System.out.println(this.serialCommitmentToCoinValue);
-		Commitment fullCommitmentToCoinUnderAccParams = new Commitment(p.accumulatorParams.accumulatorPoKCommitmentGroup, comment.getCommentPublic().getValue());		
+		Commitment fullCommitmentToCoinUnderAccParams = new Commitment(p.accumulatorAndproofParams.accumulatorPoKCommitmentGroup, comment.getCommentPublic().getValue());		
 		this.accCommitmentToCoinValue = fullCommitmentToCoinUnderAccParams.getCommitmentValue();
 		//System.out.println(this.accCommitmentToCoinValue);
 		// 2. Generate a ZK proof that the two commitments contain the same public comment.
 		this.commitmentPoK = new CommitmentProofOfKnowledge(
 				p.serialNumberSoKCommitmentGroup,
-				p.accumulatorParams.accumulatorPoKCommitmentGroup,
+				p.accumulatorAndproofParams.accumulatorPoKCommitmentGroup,
 				fullCommitmentToCoinUnderSerialParams, 
 				fullCommitmentToCoinUnderAccParams);
 		
 		// Now generate the two core ZK proofs:
 		// 3. Proves that the committed public comment is in the Accumulator (PoK of "witness")
-		this.accumulatorPoK = new AccumulatorProofOfKnowledge(p.accumulatorParams, fullCommitmentToCoinUnderAccParams, witness, a);
+		this.accumulatorPoK = new AccumulatorProofOfKnowledge(p.accumulatorAndproofParams, fullCommitmentToCoinUnderAccParams, witness, a);
 		
 		// 4. Proves that the comment is correct w.r.t. serial number and hidden comment secret
 		// (This proof is bound to the comment 'metadata', i.e., transaction hash)

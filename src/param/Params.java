@@ -7,7 +7,7 @@ public class Params implements Serializable{
 
 	public Boolean initialized;
 	
-	public AccumulatorAndProofParams accumulatorParams;
+	public AccumulatorAndProofParams accumulatorAndproofParams;//包含两个IntegerGroupParams
 	
 	/**
 	 * 对一个serial number形成commitment 需要用到的二次剩余群
@@ -22,14 +22,11 @@ public class Params implements Serializable{
 	 */
 	public IntegerGroupParams serialNumberSoKCommitmentGroup;
 	
-	/*
-	 * The number of iterations to use in the serial number proof.
-	 */
+	
+	//在serial number proof中循环的次数
 	public int zkp_iterations;
 	
-	/*
-	 * The amount of the hash function we use for proofs.
-	 */
+	//The amount of the hash function we use for proofs.
 	public int zkp_hash_len;
 	
 //	public int ZEROCOIN_DEFAULT_SECURITYLEVEL = 80;
@@ -53,22 +50,18 @@ public class Params implements Serializable{
 	public Params(BigInteger accumulatorModulus,int securityLevel /*ParamGeneration paramgeneration*/) {
 		//初始化本地变量
 System.out.println("======进入Params构造方法，生成Params...======");
-		this.accumulatorParams = new AccumulatorAndProofParams();
-		this.coinCommitmentGroup = new IntegerGroupParams();
+		this.accumulatorAndproofParams = new AccumulatorAndProofParams();
+//		this.coinCommitmentGroup = new IntegerGroupParams();
 		this.serialNumberSoKCommitmentGroup = new IntegerGroupParams();
 		
 		this.zkp_hash_len = securityLevel;
 		this.zkp_iterations = securityLevel;
 		
-		this.accumulatorParams.k_prime = GlobalPara.ACCPROOF_KPRIME;//160
-		this.accumulatorParams.k_dprime = GlobalPara.ACCPROOF_KDPRIME;//128
-		//System.out.println("till now ok");
+		this.accumulatorAndproofParams.k_prime = GlobalPara.ACCPROOF_KPRIME;//160
+		this.accumulatorAndproofParams.k_dprime = GlobalPara.ACCPROOF_KDPRIME;//128
 		ParamGeneration paramgeneration = new ParamGeneration();
-
-		//产生参数
-		paramgeneration.CalculateParams(this, accumulatorModulus,/* GlobalPara.ZEROCOIN_PROTOCOL_VERSION,*/ securityLevel);
-		//System.out.println("till now ok");
-		this.accumulatorParams.initialized = true;
+		paramgeneration.CalculateParams(this, accumulatorModulus, securityLevel);
+		this.accumulatorAndproofParams.initialized = true;
 		this.initialized = true;
 System.out.println("======      Params生成完毕...       ======");
 	}
