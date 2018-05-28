@@ -55,7 +55,7 @@ public class test {
 			}else {//没有本地对象则new Params
 				//Set up the Params object 80为默认安全系数
 				params_obj.createNewFile();
-				params = new Params(testModulus, 112);//第二个参数是securityLevel
+				params = new Params(testModulus, 80);//第二个参数是securityLevel
 				ObjectOutputStream oOut = new ObjectOutputStream(new FileOutputStream(params_obj));
 				oOut.writeObject(params);
 				oOut.close();
