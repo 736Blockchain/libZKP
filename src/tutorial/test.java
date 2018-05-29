@@ -44,7 +44,7 @@ public class test {
 //		System.exit(0);
 //		FileInputStream params_obj_serial = new FileInputStream(file)
 		//通过序列化存储params对象 以便实验
-		File params_obj = new File("params_obj_serialized.local");
+		File params_obj = new File("params_obj_serialized - 1024.local");
 		Params params = null;
 		try {
 			if(params_obj.exists()) {//尝试本地读取序列化对象 
@@ -55,7 +55,7 @@ public class test {
 			}else {//没有本地对象则new Params
 				//Set up the Params object 80为默认安全系数
 				params_obj.createNewFile();
-				params = new Params(testModulus, 80);//第二个参数是securityLevel
+				params = new Params(Performance.getRandomRSAModlus(3072), 80);//第二个参数是securityLevel
 				ObjectOutputStream oOut = new ObjectOutputStream(new FileOutputStream(params_obj));
 				oOut.writeObject(params);
 				oOut.close();
@@ -69,7 +69,7 @@ public class test {
 			System.out.println("[ERROR] ClassNotFound In Params Generation.");
 			e.printStackTrace();
 		}finally {
-		
+			System.out.println("---- 参数生成完毕");
 		}
 
 		/*
@@ -77,6 +77,7 @@ public class test {
 		 *  Who does it:    client
 		 *  What it does:   Generates a new comment using the public parameters.
 		 */
+
 		CommentPrivate newComment = new CommentPrivate(params,"abhjghjcd");
 		CommentPublic pubComment = newComment.getCommentPublic();
 
@@ -98,7 +99,7 @@ public class test {
 		 *  What it does:   Collects a number of PublicCoin values drawn from the block chain and calculates an accumulator.
 		 */
 		// Create an empty accumulator object
-		Accumulator accumulator = new Accumulator(params,"");
+		Accumulator accumulator = new Accumulator(params);
 //		accumulator.AddCommentPublic(newComment.getCommentPublic());
 		
 		System.out.println("=>Generate 5 testComments and Accumulate them...");
@@ -107,13 +108,14 @@ public class test {
 			CommentPrivate testComment = new CommentPrivate(params,"abcd"+""+i);
 			accumulator.AddCommentPublic(testComment.getCommentPublic());
 		}
-	
+		
+
 		System.out.println("--------- 5 个测试comment的 accumulator值:\n\t\t"+accumulator.getValue());
 
 		//TODO Comment spend method stub
 		/*
 		 *  What is it:		Accumulator computation
-    	 *  Who does it:    client 
+    	 	 *  Who does it:    client 
 		 *  What it does:   Create a new transaction that spends a Comment.
 		 */
 System.out.println("=>Generate a witness...");

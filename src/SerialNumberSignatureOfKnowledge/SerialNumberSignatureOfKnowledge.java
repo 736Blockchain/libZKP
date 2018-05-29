@@ -25,7 +25,7 @@ public class SerialNumberSignatureOfKnowledge {
 		params = p;
 	}
 	
-	public SerialNumberSignatureOfKnowledge(Params p, CommentPrivate commentPrivate, Commitment commitmentToCoin, byte[] msghash){
+	public SerialNumberSignatureOfKnowledge(Params p, CommentPrivate commentPrivate, Commitment commitmentToCoin/*, byte[] msghash*/){
 		params = p;
 		s_notprime = new BigInteger[params.zkp_iterations];
 		sprime = new BigInteger[params.zkp_iterations];
@@ -103,7 +103,7 @@ public class SerialNumberSignatureOfKnowledge {
 	}
 	
 	
-	public Boolean Verify(BigInteger commentSerialNumber, BigInteger valueOfCommitmentToCoin, byte[] msghash) {
+	public Boolean Verify(BigInteger commentSerialNumber, BigInteger valueOfCommitmentToCoin/*, byte[] msghash*/) {
 		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 		//System.out.println(s_notprime);
 		//System.out.println(sprime);

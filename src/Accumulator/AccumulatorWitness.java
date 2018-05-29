@@ -28,6 +28,13 @@ public class AccumulatorWitness {
 		return this.witness.getValue();
 	}
 	
+	
+	/**
+	 * 验证当前witness在add了参数中的comment之后是不是和全局的Accumulator值一样
+	 * @param a
+	 * @param comment
+	 * @return
+	 */
 	public boolean VerifyWitness(Accumulator a, CommentPublic comment) {
 		Accumulator temp = new Accumulator(witness);
 		temp = temp.AddCommentPublic(element);

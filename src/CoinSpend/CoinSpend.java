@@ -77,7 +77,7 @@ System.out.println("--------witness verify success");
 		// 4. Proves that the comment is correct w.r.t. serial number and hidden comment secret
 		// (This proof is bound to the comment 'metadata', i.e., transaction hash)
 		
-		this.serialNumberSoK = new SerialNumberSignatureOfKnowledge(p, comment, fullCommitmentToCoinUnderSerialParams, signatureHash(m));
+		this.serialNumberSoK = new SerialNumberSignatureOfKnowledge(p, comment, fullCommitmentToCoinUnderSerialParams/*, signatureHash(m)*/);
 			
 	}
 	 
@@ -98,11 +98,11 @@ System.out.println("--------witness verify success");
 		System.out.println("===========================");
 		System.out.println(accumulatorPoK.Verify(a, accCommitmentToCoinValue));
 		System.out.println("===========================");
-		System.out.println(serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue, signatureHash(m)));
+		System.out.println(serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue/*, signatureHash(m)*/));
 		return   /*(a.getComment() == this.getComment())
 				&& */commitmentPoK.Verify(serialCommitmentToCoinValue, accCommitmentToCoinValue)
 		        && accumulatorPoK.Verify(a, accCommitmentToCoinValue)
-		        && serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue, signatureHash(m));
+		        && serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue/*, signatureHash(m)*/);
 	}
 	
 	

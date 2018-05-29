@@ -1,6 +1,7 @@
 package Accumulator;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.lang.String;
 import param.Params;
 import param.AccumulatorAndProofParams;
@@ -12,43 +13,36 @@ public class Accumulator {
 
 	private AccumulatorAndProofParams params;
 	private BigInteger accumulateValue;
-	private String comment;
+//	private String comment;
 	
 	
-	public Accumulator(AccumulatorAndProofParams p, String c) {
-		
-		this.params = p;
-		this.comment = c;
-		
-		if (!params.initialized) {
-			throw new libzkpException("Invalid parameters for accumulator");
-		}
-		
-		this.accumulateValue = this.params.accumulatorBase;
-		
-	}
+//	public Accumulator(AccumulatorAndProofParams p) {
+//		this.params = p;
+//		if (!params.initialized) {
+//			throw new libzkpException("Invalid parameters for accumulator");
+//		}
+//		this.accumulateValue = this.params.accumulatorBase;
+//	}
 	
-    public Accumulator(Params p, String c) {
-		
+	/**
+	 * 生成一个Accumulator  参数为Params
+	 * @param p Params
+	 */
+    public Accumulator(Params p) {
     		this.params = p.accumulatorAndproofParams;
-    		this.comment = c;
-		
 		if (!params.initialized) {
 			throw new libzkpException("Invalid parameters for accumulator");
 		}
-		
 		this.accumulateValue = this.params.accumulatorBase;
-		
 	}
     
     /**
-     * copy an accumulator
-     * but we leave comment blank
+     * 拷贝一个Accumulator(生成一个跟参数一样的Accumulator对象)
+     * @param 一个Accumulator
      */
     public Accumulator(Accumulator a) {
-    	this.params = a.params;
-    	this.accumulateValue = a.accumulateValue;
-    	this.comment = "";
+	    	this.params = a.params;
+	    	this.accumulateValue = a.accumulateValue;
     }
     
     /**
@@ -56,7 +50,6 @@ public class Accumulator {
      * @param commentpublic
      */
     public void accumulate(CommentPublic commentpublic) {
-	    	
 	    	if(this.accumulateValue == null) {
 	    		throw new libzkpException("Accumulator is not initialized");
 	    	}
@@ -95,6 +88,22 @@ public class Accumulator {
     
     public boolean EqualAccumulator(Accumulator a) {
     		return this.accumulateValue.compareTo(a.accumulateValue)==0;
+    }
+    
+    /**
+     * 返回一个CommentPrivate 的 witness
+     * @param commentprivatelist 包含一段时间内生成的所有commentPrivate
+     * @param commentprivate 需要生成witness的comment
+     * @return 该commentprivate的witness
+     */
+    public static AccumulatorWitness getAccumulatorWitness(ArrayList<CommentPrivate> commentprivatelist, Params params,  CommentPrivate comment_private) {
+    		Accumulator accumulatorValueWithoutOneCommentPrivate =  new Accumulator(params);
+    		for(CommentPrivate commentprivate:commentprivatelist) {
+    			if(commentprivate != comment_private) 
+    				accumulatorValueWithoutOneCommentPrivate.AddCommentPublic(commentprivate.getCommentPublic());
+    		}
+    		
+    		return new AccumulatorWitness(params, accumulatorValueWithoutOneCommentPrivate, comment_private.getCommentPublic());
     }
 } 
    
